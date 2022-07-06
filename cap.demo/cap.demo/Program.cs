@@ -1,5 +1,6 @@
 using Savorboard.CAP.InMemoryMessageQueue;
 using DotNetCore.CAP.Dashboard;
+using cap.demo.MySql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +11,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<AppDbContext>();
+
 builder.Services.AddCap(x =>
 {
-    x.UseInMemoryStorage();
-    x.UseInMemoryMessageQueue();
+    //x.UseInMemoryStorage();
+    //x.UseInMemoryMessageQueue();
+    x.UseRabbitMQ(config =>
+    {
+        config.HostName = "localhost";
+        config.UserName = "admin";
+        config.Password = "admin";
+        config.VirtualHost = "my_vhost";
+        config.Port = 5672;
+    });
+
     x.UseDashboard();
+
+    x.UseEntityFramework<AppDbContext>();
 });
 
 var app = builder.Build();

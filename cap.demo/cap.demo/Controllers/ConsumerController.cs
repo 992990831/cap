@@ -16,5 +16,12 @@ namespace cap.demo.Controllers
             Console.WriteLine("message firset header :" + header["my.header.first"]);
             Console.WriteLine("message second header :" + header["my.header.second"]);
         }
+
+        [NonAction]
+        [CapSubscribe("sample.rabbitmq.mysql")]
+        public void Subscriber(DateTime p)
+        {
+            Console.WriteLine($@"{DateTime.Now} Subscriber invoked, Info: {p}");
+        }
     }
 }
